@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,logout,login 
-from .forms import Profileform,Userupdate,Bookform,Chatform
+from .forms import Profileform,Userupdate,Bookform,Chatform,NewGroupChatForm,ChatRoomEditForm
 from .models import Profile,Product,Booking,OrderModel,ChatGroup,Groupmessage
 from django.core.mail import EmailMessage,send_mail
 from django.contrib.auth import get_user_model
@@ -66,11 +66,13 @@ def index(request):
     return render(request,'index.html',context)
 
 
+
+
 def handlesignin(request):
     if request.method == "POST":
         email = request.POST.get('email')
         name = request.POST.get('name')
-        title = request.POST.get('title')  # Assuming 'title' is meant to be last name or similar
+        title = request.POST.get('title')  
         phone = request.POST.get('phone')
         password = request.POST.get('password')
 
@@ -85,11 +87,13 @@ def handlesignin(request):
             myuser.first_name = name
             myuser.last_name = title  # Assign the title or last name
             myuser.save()
-            subject = 'welcome to INDOBITES'
-            message = f'Hi {user.username}, thank you for registering'
+            
+            # Send a welcome email
+            subject = 'Welcome to INDOBITES'
+            message = f'Hi {myuser.username}, thank you for registering'
             email_from = settings.EMAIL_HOST_USER
-            recipient_list = [user.email, ]
-            send_mail( subject, message, email_from, recipient_list )
+            recipient_list = [myuser.email, ]
+            send_mail(subject, message, email_from, recipient_list)
 
             # Authenticate and log the user in
             user = authenticate(username=name, password=password)
@@ -106,6 +110,7 @@ def handlesignin(request):
             return redirect("/signin")
 
     return render(request, 'CreateAccount.html')
+
 
 def prof(request,username):
     if request.user.is_anonymous:
@@ -407,6 +412,10 @@ def booking(request):
 
 @login_required(login_url='/login')
 def chatview(request,chatroom_name='Public-chat'):
+    if request.user.is_anonymous:
+        sign=False
+    else:
+        sign=True
     chat_group=get_object_or_404(ChatGroup,groupname=chatroom_name)
     chat_messages=chat_group.chat_messages.all()[:30]
     form=Chatform()
@@ -418,6 +427,11 @@ def chatview(request,chatroom_name='Public-chat'):
             if member != request.user:
                 other_user = member
                 break
+    
+    if chat_group.groupchat_name:
+        if request.user not in chat_group.members.all():
+          if request.user not in chat_group.banlist.all():  
+            chat_group.members.add(request.user)
 
     if request.method =='POST':
         form=Chatform(request.POST)
@@ -436,6 +450,8 @@ def chatview(request,chatroom_name='Public-chat'):
 'form':form,
 'otheruser':other_user,
 'chatroom_name':chatroom_name,
+'chat_group':chat_group,
+'sign':sign
     }    
     return render(request,'chat.html',context)
 
@@ -448,6 +464,7 @@ def get_or_createchatroom(request,username):
     if my_chatrooms.exists():
         for chatroom in my_chatrooms:
             if other_user in chatroom.members.all():
+             if other_user not in chatroom.banlist.all():
                 chatroom=chatroom
                 break
             else:
@@ -457,3 +474,67 @@ def get_or_createchatroom(request,username):
         chatroom=ChatGroup.objects.create(is_private=True)
         chatroom.members.add(other_user,request.user)
     return redirect('chatroom', chatroom.groupname)
+
+@login_required(login_url="/login")
+def create_groupchat(request):
+    form=NewGroupChatForm()
+    if request.method == 'POST':
+        form = NewGroupChatForm(request.POST)
+        if form.is_valid():
+            new_groupchat = form.save(commit=False)
+            new_groupchat.admin = request.user
+            new_groupchat.save()
+            new_groupchat.members.add(request.user)
+            return redirect('chatroom', new_groupchat.groupname)
+    
+    context = {
+        'form': form
+    }
+    return render(request,'create_groupchat.html',context)
+
+login_required(login_url="/login")
+def chatroom_edit_view(request,chatroom_name):
+    chat_group = get_object_or_404(ChatGroup, groupname=chatroom_name)
+    if request.user != chat_group.admin:
+        raise Http404()
+    form=ChatRoomEditForm(instance=chat_group)
+    if request.method == 'POST':
+        form = ChatRoomEditForm(request.POST, instance=chat_group)
+        if form.is_valid():
+            form.save()
+            remove_members = request.POST.getlist('remove_members')
+            for member_id in remove_members:
+                member = User.objects.get(id=member_id)
+                if member not in chat_group.banlist.all():
+                    chat_group.banlist.add(member)
+                chat_group.members.remove(member)  
+            ban_members = request.POST.getlist('ban_members')
+            if ban_members:
+                for member_id in ban_members:
+                    member = User.objects.get(id=member_id)
+                    if member  in chat_group.banlist.all():
+                        chat_group.banlist.remove(member)
+                
+            return redirect('chatroom', chatroom_name)
+    return render(request,'chatroomedit.html',{
+        'form' : form,
+        'chat_group' : chat_group
+    } )
+
+@login_required(login_url="/login")
+def chatroom_delete_view(request,chatroom_name):
+    chat_group = get_object_or_404(ChatGroup, groupname=chatroom_name)
+    if request.user != chat_group.admin:
+        raise Http404()
+    else:
+        chat_group.delete()
+        return redirect('/')
+    
+def chatroom_leave_view(request, chatroom_name):
+    chat_group = get_object_or_404(ChatGroup, groupname=chatroom_name)
+    if request.user not in chat_group.members.all():
+        raise Http404()
+    if request.method == "POST":
+        chat_group.members.remove(request.user)
+        return redirect('/')
+    return render(request,'chat.html',{'chat_group':chat_group})

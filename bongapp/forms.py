@@ -25,6 +25,33 @@ class Chatform(forms.ModelForm):
                 'style': 'border-radius: 20px; padding: 10px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1);'
             }),
         }
+
+class NewGroupChatForm(forms.ModelForm):
+    class Meta:
+        model = ChatGroup
+        fields = ['groupchat_name']
+        widgets = {
+            'groupchat_name': forms.TextInput(attrs={
+                'placeholder': 'Group name',
+                'class': 'form-control form-control-lg',
+                'id': 'textInput',
+                'autofocus': True,
+                'max_length': '50',
+                
+            }),
+        }
+
+class ChatRoomEditForm(forms.ModelForm):
+    class Meta:
+        model = ChatGroup
+        fields = ['groupchat_name']
+        widgets = {
+            'groupchat_name' : forms.TextInput(attrs={
+                'class': 'form-control form-control-lg', 
+                'maxlength' : '300', 
+                }),
+        }
+
 class Userupdate(forms.ModelForm):
    email=forms.EmailField()
 

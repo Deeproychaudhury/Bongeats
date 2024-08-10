@@ -22,6 +22,10 @@ urlpatterns = [
     path("chatview",views.chatview,name="chat"),
     path("chat/<str:username>",views.get_or_createchatroom,name="start-chat"),
     path("chat/room/<chatroom_name>",views.chatview,name="chatroom"),
+    path('chat/new_groupchat/', views.create_groupchat, name="new-groupchat"),
+    path('chat/edit/<chatroom_name>', views.chatroom_edit_view, name="edit-chatroom"),
+    path('chat/delete/<chatroom_name>', views.chatroom_delete_view, name="chatroom-delete"),
+    path('chat/leave/<chatroom_name>', views.chatroom_leave_view, name="chatroom-leave"),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # store image url

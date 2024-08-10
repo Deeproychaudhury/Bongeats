@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'mathfilters',
     'fontawesome',
     'django_htmx',
-    'indochat',
+
 ]
 
 MIDDLEWARE = [
@@ -138,11 +138,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+import logging
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s %(levelname)s %(message)s',
+)
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'smtp.mail.yahoo.com' 
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER='deeproychaudhury@gmail.com'
+EMAIL_HOST_USER='rcdeep22@yahoo.com'
 EMAIL_HOST_PASSWORD = 'Debanjan22!'
 
 # Default primary key field type
