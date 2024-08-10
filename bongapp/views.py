@@ -530,11 +530,11 @@ def chatroom_delete_view(request,chatroom_name):
         chat_group.delete()
         return redirect('/')
     
-def chatroom_leave_view(request, chatroom_name):
+def chatroom_leave_view(request,chatroom_name):
     chat_group = get_object_or_404(ChatGroup, groupname=chatroom_name)
     if request.user not in chat_group.members.all():
         raise Http404()
-    if request.method == "POST":
+    else:
         chat_group.members.remove(request.user)
-        return redirect('/')
-    return render(request,'chat.html',{'chat_group':chat_group})
+        return redirect('/')    
+    

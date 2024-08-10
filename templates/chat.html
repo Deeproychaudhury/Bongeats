@@ -175,7 +175,7 @@
                         </a>
                         {% else %}
                         {% if chat_group.groupchat_name %}
-                        <div class="d-flex ustify-content-between">
+                        <div class="d-flex justify-content-between">
                             <strong class="d-flex align-items-center">
                                 <div id="groupchat_members" class=" dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -192,6 +192,10 @@
                                 {% endif %}
                                 <small class="text-muted mx-2">share the url to invite other members</small>
                             </strong>
+                            {% if chat_group.members.exists %}
+                            <a href="{% url 'chatroom-leave' chat_group.groupname %}"><i class="fa-solid fa-right-from-bracket"></i></a>
+
+                            {% endif %}
 
                         </div>
 
