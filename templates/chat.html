@@ -127,9 +127,9 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fa-brands fa-rocketchat"></i>
+                                <span id="online-inchat"></span>
                             </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{% url 'chat'%}">Community</a>
+                            <div id="chat-list" class="dropdown-menu" aria-labelledby="navbarDropdown"> <a class="dropdown-item" href="{% url 'chat'%}">Community</a>
                                 {% for chatroom in user.chat_groups.all %}
                                 {% if chatroom.is_private %}
                                 {% for membr in chatroom.members.all %}
@@ -150,7 +150,7 @@
                             </div>
                         </li>
                         <li>
-                            <strong> Welcome Dear {{user.username}}</strong>
+                            <strong> Welcome, Dear {{user.username}}</strong>
                         </li>
                         {% if sign %}
                         <button class="main-btn"><a href="/logout">logout</a></button>
@@ -222,7 +222,7 @@
         </div>
 
     </div>
-    <footer id="footer">
+    <footer id="footer" hx-ext="ws" ws-connect="/ws/online-status/">
         <div class="footer">
             <div class="container">
                 <div class="row">

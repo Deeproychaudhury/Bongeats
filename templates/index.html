@@ -439,7 +439,8 @@
             <a class="footer-link" href="#">Affiliate</a>
             <a class="footer-link" href="#">FAQ</a>
             <div class="footer pt-4 text-center">
-              {% if user.is_staff or user.is_admin %}
+
+              {% if user.is_staff or user.is_superuser %}
               <a href="/list-orders" class="footer-link">Go to
                 list-orders</a>
               {% endif %}

@@ -2,7 +2,8 @@
 <div class="d-flex flex-column mb-3 user1bubble">
     <div class="d-flex align-items-center">
         <img src="{{message.author.profile.image.url}}" class="rounded-circle" alt="{{message.author.username}}">
-        <strong>{{message.author.username}}: </strong>
+        <strong>{{message.author.username}} :
+        </strong>
         <small class="text-muted">{{message.created}}</small>
     </div>
     <p>{{message.body}}</p>
@@ -10,10 +11,17 @@
 {% else %}
 <div class="d-flex flex-column mb-3 user2bubble">
     <div class="d-flex align-items-center">
-        <a href="{% url 'prof' message.author.username %}"><img src="{{message.author.profile.image.url}}"
-                class="rounded-circle" alt="User 2"></a>
+        <a href="{% url 'prof' message.author.username %}"><img src="{{message.author.profile.image.url}}" class="rounded-circle" alt="User 2"></a>
 
-        <strong>{{message.author.username}}: </strong>
+        <strong>{{message.author.username}}
+            {% if message.author.is_superuser %}
+            <small class="text-muted">(Admin) </small>
+            {% elif message.author.is_staff and not message.author.is_superuser %}
+            <small class="text-muted"> (Staff)</small>
+            {% else %}
+
+            {% endif %}
+            : </strong>
         <small class="text-muted">{{message.created}}</small>
     </div>
     <p>{{message.body}}</p>
