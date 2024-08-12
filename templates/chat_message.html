@@ -15,13 +15,11 @@
 
         <strong>{{message.author.username}}
             {% if message.author.is_superuser %}
-            <small class="text-muted">(Admin) </small>
+            <small class="text-muted">Admin</small>
             {% elif message.author.is_staff and not message.author.is_superuser %}
-            <small class="text-muted"> (Staff)</small>
+            <small class="text-muted">Staff</small>
             {% else %}
-
-            {% endif %}
-            : </strong>
+            {% endif %}: </strong>
         <small class="text-muted">{{message.created}}</small>
     </div>
     <p>{{message.body}}</p>

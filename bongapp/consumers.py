@@ -68,6 +68,7 @@ class OnlineStatusConsumer(WebsocketConsumer):
     def connect(self):
         self.user = self.scope['user']
         self.group_name = 'online-status'
+        
         self.group = get_object_or_404(ChatGroup, groupname=self.group_name)
         
         if self.user not in self.group.users_online.all():
@@ -106,8 +107,10 @@ class OnlineStatusConsumer(WebsocketConsumer):
         if public_chat_users or private_chats_with_users or group_chats_with_users:
             online_in_chats = True
         else:
-            online_in_chats = False
+            online_in_chats = False                
                 
-        context = {'online_in_chats':online_in_chats}
+
+        context = {'online_in_chats':online_in_chats,'public_chat_users': public_chat_users,
+            'user': self.user}
         html = render_to_string('partials/online_users.html', context)
         self.send(text_data=html) 

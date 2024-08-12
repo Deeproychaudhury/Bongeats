@@ -124,31 +124,13 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/cart">🛒Cart</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fa-brands fa-rocketchat"></i>
-                                <span id="online-inchat"></span>
-                            </a>
-                            <div id="chat-list" class="dropdown-menu" aria-labelledby="navbarDropdown"> <a class="dropdown-item" href="{% url 'chat'%}">Community</a>
-                                {% for chatroom in user.chat_groups.all %}
-                                {% if chatroom.is_private %}
-                                {% for membr in chatroom.members.all %}
-                                {% if membr != request.user %}
-                                <a class="dropdown-item" href="{% url 'chatroom' chatroom.groupname %}">{{membr.username}}</a>
-                                {% endif %}
-                                {% endfor %}
-                                {% endif %}
-                                {% endfor %}
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{% url 'new-groupchat' %}">Create GroupChat<i class="fa-solid fa-users-line"></i></a>
-                                {% for chatroom in user.chat_groups.all %}
-                                {% if chatroom.groupchat_name %}
-                                <a class="dropdown-item" href="{% url 'chatroom' chatroom.groupname %}">{{chatroom.groupchat_name}}</a>
-                                {% endif %}
-                                {% endfor %}
+                        <div class="d-flex position-relative">
+                            <li id="chats-list" class="nav-item dropdown">
 
-                            </div>
-                        </li>
+                            </li>
+                            <span id="online-inchat" class="position-absolute top-0 start-50 translate-middle-x"></span>
+                        </div>
+
                         <li>
                             <strong> Welcome, Dear {{user.username}}</strong>
                         </li>
