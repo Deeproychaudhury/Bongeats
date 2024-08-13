@@ -97,3 +97,60 @@ class Profileform(forms.ModelForm):
                 'placeholder': 'Email'
                 })
         }
+class AvailabilityForm(forms.Form):
+    Ammenity_CHOICES = (
+        ("Buffet","Buffet"),
+        ("Cafeteria-Style", "Cafeteria-Style"),
+        ("Pre-Set Service", "Pre-Set Service"),
+        ("Cocktail-Style", "Cocktail-Style"),
+        ("Cabaret", "Cabaret"),
+        ("Banquet-Style", "Banquet-Style"),
+        ("Dinner-Dance", "Dinner-Dance"),
+        ("Exhibition", "Exhibition"),
+        ("Plated", "Plated"),
+        ("Meeting-Style", "Meeting-Style"),
+    )
+    
+    category_choices = (
+        ("Small", "Small"),
+        ("Medium", "Medium"),
+        ("Grand", "Grand"),
+        ("Deluxe", "Deluxe"), )
+    SEAT_CHOICES = (
+        ("2","2"),
+        ("4", "4"),
+        ("10", "10"),
+        ("buffet", "buffet"),
+    )
+    category= forms.ChoiceField( choices=category_choices, widget=forms.Select(attrs={'class': 'form-control'}), required=True)
+
+    ammenity = forms.ChoiceField(
+        choices=Ammenity_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=True
+    )
+    
+    
+    hallcapacity = forms.ChoiceField(
+        choices=SEAT_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=True
+    )
+    
+    checkin = forms.DateTimeField(
+        input_formats=['%Y-%m-%dT%H:%M'],
+        widget=forms.DateTimeInput(
+            attrs={'class': 'form-control', 'type': 'datetime-local'},
+            format='%Y-%m-%dT%H:%M'
+        ),
+        required=True
+    )
+    
+    checkout = forms.DateTimeField(
+        input_formats=['%Y-%m-%dT%H:%M'],
+        widget=forms.DateTimeInput(
+            attrs={'class': 'form-control', 'type': 'datetime-local'},
+            format='%Y-%m-%dT%H:%M'
+        ),
+        required=True
+    )

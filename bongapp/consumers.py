@@ -108,8 +108,6 @@ class OnlineStatusConsumer(WebsocketConsumer):
             online_in_chats = True
         else:
             online_in_chats = False                
-                
-
         context = {'online_in_chats':online_in_chats,'public_chat_users': public_chat_users,
             'user': self.user}
         html = render_to_string('partials/online_users.html', context)

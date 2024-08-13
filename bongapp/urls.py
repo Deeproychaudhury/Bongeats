@@ -26,6 +26,9 @@ urlpatterns = [
     path('chat/edit/<chatroom_name>', views.chatroom_edit_view, name="edit-chatroom"),
     path('chat/delete/<chatroom_name>', views.chatroom_delete_view, name="chatroom-delete"),
     path('chat/leave/<chatroom_name>', views.chatroom_leave_view, name="chatroom-leave"),
+    path('halllist',views.halllist,name='halllist'),
+    path('hallbookinglist',views.Hallbookinglist,name='hallbookinglist'),
+    path('hallbooking',views.HallBookingView,name='hallbooking'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # store image url

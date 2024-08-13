@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
 from PIL import Image
-
+from shortuuid.django_fields import ShortUUIDField
 REVIEW_CHOICES = (
     ("1 star", "1 star"),
     ("2 star", "2 star"),
@@ -13,8 +13,7 @@ SEAT_CHOICES = (
     ("2","2"),
     ("4", "4"),
     ("10", "10"),
-    ("20", "20"),
-    ("30+(buffet)", "30+(buffet)"),
+    ("buffet", "buffet"),
     )
 
 # Create your models here. DJANGO already comes with a built in user model 
@@ -113,3 +112,45 @@ class Groupmessage(models.Model):
     
     class Meta:
         ordering=['-created']
+
+class Hall(models.Model):
+
+    category_choices = (
+        ("Small", "Small"),
+        ("Medium", "Medium"),
+        ("Grand", "Grand"),
+        ("Deluxe", "Deluxe"),
+    )
+    number=models.IntegerField()
+    category=models.CharField(max_length=100, choices=category_choices, default="")
+    hallcapacity=models.CharField(max_length=100, choices=SEAT_CHOICES, default="2")
+    price_per_hour = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+     return f"Hall {self.number}"
+    
+class HallBookings(models.Model):
+    Ammenity_CHOICES = (
+    ("Buffet","Buffet"),
+    ("Cafeteria-Style", "Cafeteria-Style"),
+    ("Pre-Set Service", "Pre-Set Service"),
+    ("Cocktail-Style", "Cocktail-Style"),
+    ("Cabaret", "Cabaret"),
+    ("Banquet-Style", "Banquet-Style"),
+    ("Dinner-Dance", "Dinner-Dance"),
+    ("Exhibition", "Exhibition"),
+    ("Plated", "Plated"),
+    ("Meeting-Style", "Meeting-Style"),   
+    )
+    booking_id=models.CharField(max_length=100,unique=True,blank=True,default=shortuuid.uuid)
+    Hall= models.ForeignKey(Hall, on_delete=models.CASCADE)
+    ammenity=models.CharField(max_length=100, choices=Ammenity_CHOICES, default="")
+    customer = models.ForeignKey(User,on_delete=models.CASCADE,default=0)
+    checkin=models.DateTimeField()
+    checkout=models.DateTimeField()
+    payment_status = models.BooleanField(default=False)
+    stripe_checkout_sessionid=models.CharField(max_length=255, blank=True, null=True)
+    
+    def __str__(self):
+        return f'{self.Hall} Booked by {self.customer.username}'
+    

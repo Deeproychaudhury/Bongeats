@@ -1,12 +1,13 @@
 from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
+from django.db import transaction
 from django.http import HttpResponseBadRequest,Http404,HttpResponseForbidden
 from datetime import datetime,timedelta
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,logout,login 
-from .forms import Profileform,Userupdate,Bookform,Chatform,NewGroupChatForm,ChatRoomEditForm
-from .models import Profile,Product,Booking,OrderModel,ChatGroup,Groupmessage
+from .forms import Profileform,Userupdate,Bookform,Chatform,NewGroupChatForm,ChatRoomEditForm,AvailabilityForm
+from .models import Profile,Product,Booking,OrderModel,ChatGroup,Groupmessage,Hall,HallBookings
 from django.core.mail import EmailMessage,send_mail
 from django.contrib.auth import get_user_model
 from math import ceil
@@ -53,6 +54,7 @@ def loginuser(request):
 
   
 def index(request):
+    form=AvailabilityForm()
     if request.user.is_anonymous:
         value="customer"
         sign=False
@@ -61,7 +63,8 @@ def index(request):
        sign=True
     context={
         'value':value,
-        'sign':sign
+        'sign':sign,
+        'form':form 
              }
     return render(request,'index.html',context)
 
@@ -241,7 +244,7 @@ def cart(request):
 
       return render(request, 'cart.html', {'orders': orders, 'count': count, 'value': request.user.username, 'sum': sum})
 
-#HAndle razorpay
+#HAndle payment
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 YOUR_DOMAIN = "http://127.0.0.1:8000"
@@ -417,7 +420,7 @@ def chatview(request,chatroom_name='Public-chat'):
     else:
         sign=True
     chat_group=get_object_or_404(ChatGroup,groupname=chatroom_name)
-    chat_messages=chat_group.chat_messages.all()[:30]
+    chat_messages=chat_group.chat_messages.all()[:100]
     form=Chatform()
     other_user=None
     if chat_group.is_private:
@@ -537,4 +540,38 @@ def chatroom_leave_view(request,chatroom_name):
     else:
         chat_group.members.remove(request.user)
         return redirect('/')    
-    
+
+from bongapp.availability import availability
+
+def halllist(request):
+    rooms = Hall.objects.all()  # Query all Room objects
+    return render(request, 'room_list.html', {'rooms': rooms})
+def Hallbookinglist(request):
+    bookings = HallBookings.objects.all()  # Query all Booking objects
+    return render(request, 'booking_list.html', {'bookings': bookings})
+
+def HallBookingView(request):
+    form=AvailabilityForm()
+    if request.method == 'POST':
+        form = AvailabilityForm(request.POST)
+        if form.is_valid():
+            data=form.cleaned_data
+            hall_list=Hall.objects.filter(category=data['category'])
+            available_halls=[]
+            with transaction.atomic():
+              for hall in hall_list:
+                if availability(hall,data['checkin'],data['checkout']):
+                    available_halls.append(hall)
+              if len(available_halls)>0:
+               hall= available_halls[0]
+               booking=HallBookings.objects.create(Hall=hall,ammenity=data['ammenity'],customer=request.user,checkin=data['checkin'],checkout=data['checkout'])
+               booking.save()
+               messages.success(request, "Hall booked successfully")
+               
+              else:
+                messages.error(request, "No hall available for the selected dates")
+                
+
+            
+    context = { 'form': form }
+    return render(request, 'booking_form.html', context)
