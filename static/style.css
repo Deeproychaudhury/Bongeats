@@ -395,6 +395,9 @@ p {
  testimonial section Design
 ==========================================
 */
+
+
+
 .testimonial-section {
   background: url('bg/bg-4.jpg') no-repeat;
   background-size: cover;
@@ -519,6 +522,20 @@ footer section Design
   font-size: 1.5rem;
   color: var(--white-color);
   padding: 0 1rem;
+}
+
+.slide-right {
+  animation: 3s slide-right;
+}
+
+@keyframes slide-right {
+  from {
+    margin-left: -100%;
+  }
+
+  to {
+    margin-left: 0%;
+  }
 }
 
 /*

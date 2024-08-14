@@ -146,11 +146,14 @@ logging.basicConfig(
 )
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.mail.yahoo.com' 
+#EMAIL_HOST = 'smtp.mail.yahoo.com' 
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER='rcdeep22@yahoo.com'
-EMAIL_HOST_PASSWORD = 'Debanjan22!'
+#EMAIL_HOST_USER='rcdeep22@yahoo.com'
+#EMAIL_HOST_PASSWORD = 'Debanjan22!'
+EMAIL_HOST_USER = 'ridhimansin@gmail.com'  # Your Gmail address
+EMAIL_HOST_PASSWORD = 'qmod oilh eyef lsbg'  # Your Gmail password
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -168,5 +171,6 @@ MEDIA_URL='/media/'
 STRIPE_PUBLIC_KEY = 'pk_test_51PjkGyP8vW4nFj074MLBrldxHjLcsmGoJCPyUL9aew81a1Ob59swiSMZdmcv1s1E7XJjo0toVYoRkKE6xj7QDnQ300fkn8MblW'
 STRIPE_SECRET_KEY = 'sk_test_51PjkGyP8vW4nFj07CiFE4QR1ZG9vJ9cZljHQVm80XckO24Rwe0JrlnuwEDIOVit8jDl5P7D4eQMA4dmWPQB8qkgi00v4VxVw3x'
 STRIPE_WEBHOOK_SECRET="whsec_65f6f35d4e47e750e587e997ff8d45c5a85cf516031e46f02dd0b8bc374efa2a"
+STRIPE_WEBHOOK_SECRET_KEY=""
 
 

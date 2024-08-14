@@ -4,11 +4,10 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Indo Bites | Profile </title>
+    <title>Indo Bites | Profile</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style type="text/css">
         body {
             margin-top: 20px;
@@ -33,10 +32,10 @@
         }
 
         /*
-==========================================
-   Custom CSS Design
-==========================================
-*/
+        ==========================================
+           Custom CSS Design
+        ==========================================
+        */
         :root {
             --primary-color: #A82C48;
             --secondry-color: #43121d;
@@ -66,9 +65,7 @@
 
         }
 
-        a:hover {
-            color: var(--primary-color) !important;
-        }
+
 
         h4 {
             color: var(--secondry-color);
@@ -134,23 +131,28 @@
 </head>
 
 <body>
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+
     <div class="container">
         <div class="row flex-lg-nowrap">
             <div class="col-12 col-lg-auto mb-3" style="width: 200px;">
                 <div class="card p-3">
                     <div class="e-navlist e-navlist--active-bg">
-                        <ul class="nav">
-                            <li class="nav-item"><a class="nav-link px-2 " href="\"><i
-                                        class="fa-solid fa-house"></i><span>Home</span></a></li>
-                            <li class="nav-item"><a class="nav-link px-2" href="\menu"><i
-                                        class="fa fa-fw fa-th mr-1"></i><span>Menu</span></a></li>
-                            <li class="nav-item"><a class="nav-link px-2" href="#" target="__blank"><i
-                                        class="fa fa-fw fa-cog mr-1"></i><span>Food Preferences</span></a></li>
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link px-2" href="\"><i class="fas fa-house"></i><span> Home</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link px-2" href="\menu"><i class="fa fa-fw fa-th mr-1"></i><span> Menu</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link px-2" href="#"><i class="fa fa-fw fa-cog mr-1"></i><span> Food Preferences</span></a>
+                            </li>
                         </ul>
                     </div>
                 </div>
             </div>
+
             <div class="col">
                 <div class="row">
                     <div class="col mb-3">
@@ -160,46 +162,42 @@
                                     <div class="row">
                                         <div class="col-12 col-sm-auto mb-3">
                                             <div class="mx-auto" style="width: 140px;">
-                                                <div class="d-flex justify-content-center align-items-center rounded"
-                                                    style="height: 140px; background-color: rgb(233, 236, 239);">
-                                                    <img src="{{user.profile.image.url}}" alt="profil poc"
-                                                        style="height:140px;width:140px; object-fit: cover;object-position:center;">
-                                                    <!--<i class="fa fa-fw fa-camera"></i>-->
+                                                <div class="d-flex justify-content-center align-items-center rounded" style="height: 140px; background-color: rgb(233, 236, 239);">
+                                                    <img src="{{user.profile.image.url}}" alt="profile pic" style="height: 140px; width: 140px; object-fit: cover; object-position: center;">
                                                 </div>
-                                                <!-- {{user.profile.image.url}}-->
                                             </div>
                                         </div>
+
                                         <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
                                             <div class="text-center text-sm-left mb-2 mb-sm-0">
                                                 <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{user.username}}</h4>
                                                 <p class="mb-0">{{user.email}}</p>
-                                                <p> {{user.profile.phone}}</p>
+                                                <p>{{user.profile.phone}}</p>
                                                 <p>{{user.profile.address}}</p>
                                                 <small>{{user.profile.state}}</small>
                                                 <div class="mt-2">
                                                     <p class="mb-0">{{user.profile.review}}</p>
-
                                                 </div>
                                             </div>
                                             <div class="text-center text-md-right">
-                                                <span class="badge badge-secondary"
-                                                    style="background-color: #A82C48; color: azure;">{{user.username}}</span>
+                                                <span class="badge bg-secondary" style="background-color: #A82C48; color: azure;">{{user.username}}</span>
                                                 <div class="text-muted"><small>Joined {{user.date_joined}}</small></div>
-                                                <div class="text-muted"><small>Last login: {{user.last_login}}</small>
-                                                </div>
-                                                <form action="/deleteprofile" method="POST"><button class="main-btn"
-                                                        type="submit">Delete</button></form>
+                                                <div class="text-muted"><small>Last login: {{user.last_login}}</small></div>
+                                                <form action="/deleteprofile" method="POST">
+                                                    {% csrf_token %}
+                                                    <button class="btn main-btn mt-2 m-2" type="submit">Delete</button>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
+
                                     <ul class="nav nav-tabs">
-                                        <li class="nav-item"><span class="active nav-link"
-                                                style="background-color: #A82C48; color :azure">Settings</span></li>
+                                        <li class="nav-item"><span class="nav-link active" style="background-color: #A82C48; color: azure;">Settings</span></li>
                                     </ul>
+
                                     <div class="tab-content pt-3">
                                         <div class="tab-pane active">
-                                            <!-- Form  -->
-                                            <form class="form" action="" method="POST" enctype="multipart/form-data">
+                                            <form class="form" action="/prof/{{user.username}}/" enctype="multipart/form-data" method="POST">
                                                 {% csrf_token %}
                                                 <div class="row">
                                                     <div class="col">
@@ -213,13 +211,9 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
                                                 <div class="col d-flex justify-content-end">
-                                                    <button class="btn" type="submit"
-                                                        style="background-color: #A82C48; color: azure;">Save
-                                                        Changes</button>
+                                                    <button class="btn main-btn" type="submit">Save Changes</button>
                                                 </div>
-
                                             </form>
                                         </div>
                                     </div>
@@ -227,22 +221,20 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-12 col-md-3 mb-3">
                         <div class="card mb-3">
                             <div class="card-body">
                                 <div class="px-xl-3">
-                                    <button class="main-btn "><i class="fa fa-sign-out"></i>
-                                        <span><a style="color: #fefcfc;" href="/logout">Logout</a></span>
-                                    </button>
+                                    <button class="btn btn-danger w-100"><i class="fa fa-sign-out-alt"></i> <span><a style="color: #fefcfc;" href="/logout">Logout</a></span></button>
                                 </div>
                             </div>
                         </div>
                         <div class="card">
                             <div class="card-body">
-                                <h6 class="card-title font-weight-bold" style="color :#A82C48">Support</h6>
+                                <h6 class="card-title font-weight-bold" style="color: #A82C48;">Support</h6>
                                 <p class="card-text">Get fast, free help from our friendly assistants.</p>
-                                <button type="button" class="btn "
-                                    style="background-color: #A82C48; color: azure;">Contact Us</button>
+                                <button class="btn" style="background-color: #A82C48; color: azure;">Contact Us</button>
                             </div>
                         </div>
                     </div>
@@ -250,66 +242,19 @@
             </div>
         </div>
     </div>
-    {%if messages%}
-    {% for message in messages %}
 
-    <div class="alert alert-{{ message.tags}} alert-dismissible fade show" role="alert">
-        <strong>{{message}}</strong>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     {% endfor %}
     {% endif %}
 
-    <section>
-        {% if all_users %}
-        {% for alluser in all_users %}
-        <label>{{alluser.day}} </label>
-        <h4>{{alluser.seat}} </h4>
-        <h5>{{alluser.email}} </h5>
 
-        <h1>{{alluser.name}} </h1>
-        <hr>
-        {% endfor %}
-        {% else %}
-        <h1>None</h1>
-        {% endif %}
-    </section>
-    <footer id="footer">
-        <div class="footer py-5">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12 text-center">
-                        <a class="footer-link" href="/signin">Register</a>
-                        <a class="footer-link" href="#">Forum</a>
-                        <a class="footer-link" href="#">Affiliate</a>
-                        <a class="footer-link" href="#">FAQ</a>
-                        <div class="footer-social pt-4 text-center">
-                            <a href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#"><i class="fab fa-twitter"></i></a>
-                            <a href="#"><i class="fab fa-youtube"></i></a>
-                            <a href="#"><i class="fab fa-dribbble"></i></a>
-                            <a href="#"><i class="fab fa-linkedin"></i></a>
-                            <a href="#"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-sm-12">
-                        <div class="footer-copy">
-                            <div class="copy-right text-center pt-5">
-                                <p class="text-light">© 2023.Indo Bites. All rights reserved.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.1/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript">
-
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
 </body>
 
 </html>

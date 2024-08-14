@@ -61,42 +61,38 @@ class Userupdate(forms.ModelForm):
       widgets = {
             'username': TextInput(attrs={
                 'class': "form-control",
-                
                 'placeholder': 'Name'
                 }),
             'email': EmailInput(attrs={
                 'class': "form-control", 
-                
                 'placeholder': 'Email'
                 })
         }
-
 class Profileform(forms.ModelForm):
-   phone=forms.IntegerField()
-   review=forms.CharField()
-   address = forms.CharField(widget=forms.TextInput(attrs={
+    phone = forms.IntegerField(widget=forms.NumberInput(attrs={
+        'class': "form-control",
+        'placeholder': 'Phone'
+    }))
+    review = forms.CharField(widget=forms.TextInput(attrs={
+        'class': "form-control",
+        'placeholder': 'Review'
+    }))
+    address = forms.CharField(widget=forms.TextInput(attrs={
         'class': "form-control",
         'placeholder': 'Address'
-    }))    
-   state = forms.CharField(widget=forms.TextInput(attrs={
+    }))
+    state = forms.CharField(widget=forms.TextInput(attrs={
         'class': "form-control",
         'placeholder': 'State'
     }))
+    image = forms.ImageField(required=False, widget=forms.FileInput(attrs={
+        'class': "form-control"
+    }))
 
-   class Meta:
-      model=Profile
-      fields= ['image','phone','review','address','state']
-      widgets = {
-            'review': TextInput(attrs={
-                'class': "form-control",
-                'style': 'style="color :#A82C48"',
-                'placeholder': 'Name'
-                }),
-            'phone': EmailInput(attrs={
-                'class': "form-control", 
-                'placeholder': 'Email'
-                })
-        }
+    class Meta:
+        model = Profile  # Specify the model
+        fields = ['image', 'phone', 'review', 'address', 'state']  # Specify the fields to include
+
 class AvailabilityForm(forms.Form):
     Ammenity_CHOICES = (
         ("Buffet","Buffet"),

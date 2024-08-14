@@ -115,41 +115,47 @@ def handlesignin(request):
     return render(request, 'CreateAccount.html')
 
 
-def prof(request,username):
+def prof(request, username):
     if request.user.is_anonymous:
-       return redirect("/login")
+        return redirect("/login")
+
     user = get_object_or_404(User, username=username)
+
+    # If the logged-in user is viewing another user's profile
     if request.user.username != username:
-        return render(request,'ProfileDifferent.html',{'user':user})
+        return render(request, 'ProfileDifferent.html', {'user': user})
+
     if request.method == 'POST':
-      uform=Userupdate(request.POST,instance=request.user)
-      pform=Profileform(request.POST,
-                        request.FILES,
-                        instance=request.user.profile)
-      if uform.is_valid() and pform.is_valid():
-         uform.save()
-         pform.save()
-         messages.success(request, 'Profile update done')
-         return redirect(f"/prof/{request.user.username}")
+        uform = Userupdate(request.POST, instance=request.user)
+        pform = Profileform(request.POST, request.FILES, instance=request.user.profile)
 
+        if uform.is_valid() and pform.is_valid():
+            uform.save()
+            pform.save()
+            messages.success(request, f"Profile update done")
+            return redirect(f"/prof/{request.user.username}")
+        else:
+             for field, errors in uform.errors.items():
+                for error in errors:
+                    messages.error(request, f"User Form Error in {field}: {error}")
+             for field, errors in pform.errors.items():
+                for error in errors:
+                    messages.error(request, f"Profile Form Error in {field}: {error}")
     else:
-      uform=Userupdate(instance=request.user)
-      pform=Profileform(instance=request.user.profile)
-    jei=request.user.username
-    all_users=Booking.objects.filter(name=jei)
-
-    content={'uform':uform,
-             'pform':pform,
-             'all_users':all_users
-             }
-    return render(request,'ProfileCustomer.html',content)
-
+        uform = Userupdate(instance=request.user)
+        pform = Profileform(instance=request.user.profile)
+    context = {
+        'uform': uform,
+        'pform': pform,
+    }
+    return render(request, 'ProfileCustomer.html', context)
 def deleteprofile(request):
      user = request.user
      if request.method == "POST":
         logout(request)
         user.delete()
-        return redirect("")
+        return redirect("/")
+     
 def is_staff_or_admin(user):
     return user.is_staff or user.is_superuser
 
@@ -550,7 +556,12 @@ def Hallbookinglist(request):
     bookings = HallBookings.objects.all()  # Query all Booking objects
     return render(request, 'booking_list.html', {'bookings': bookings})
 
+@login_required(login_url='/login')
 def HallBookingView(request):
+    if request.user.is_anonymous:
+        sign:False
+    else:
+        sign=True    
     form=AvailabilityForm()
     if request.method == 'POST':
         form = AvailabilityForm(request.POST)
@@ -564,14 +575,42 @@ def HallBookingView(request):
                     available_halls.append(hall)
               if len(available_halls)>0:
                hall= available_halls[0]
+               # Check if Stripe product and price exist, if not create them
+               if not hall.stripe_product_id:
+                        product = stripe.Product.create(name=f"Hall {hall.number} ({hall.category})")
+                        hall.stripe_product_id = product.id
+                        hall.save()
+
+               if not hall.stripe_price_id:
+                        price = stripe.Price.create(
+                            product=hall.stripe_product_id,
+                            unit_amount=int(hall.price_per_hour * 100),  # amount in cents
+                            currency="inr",
+                        )
+                        hall.stripe_price_id = price.id
+                        hall.save()
                booking=HallBookings.objects.create(Hall=hall,ammenity=data['ammenity'],customer=request.user,checkin=data['checkin'],checkout=data['checkout'])
+
+               session = stripe.checkout.Session.create(
+                        payment_method_types=['card'],
+                        line_items=[{
+                            'price': hall.stripe_price_id,
+                            'quantity': 1,
+                            'tax_rates':[TAX_RATE_ID]
+                        }],
+                        mode='payment',
+                        success_url=YOUR_DOMAIN + '/success?session_id={CHECKOUT_SESSION_ID}',
+                        cancel_url=YOUR_DOMAIN + '/hallbooking',
+                    )
+               booking.stripe_checkout_sessionid = session.id
                booking.save()
                messages.success(request, "Hall booked successfully")
+               return redirect(session.url)
                
               else:
                 messages.error(request, "No hall available for the selected dates")
                 
 
             
-    context = { 'form': form }
+    context = { 'form': form,'sign':sign} 
     return render(request, 'booking_form.html', context)

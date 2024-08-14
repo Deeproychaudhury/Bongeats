@@ -125,6 +125,8 @@ class Hall(models.Model):
     category=models.CharField(max_length=100, choices=category_choices, default="")
     hallcapacity=models.CharField(max_length=100, choices=SEAT_CHOICES, default="2")
     price_per_hour = models.DecimalField(max_digits=10, decimal_places=2)
+    stripe_price_id = models.CharField(max_length=255, blank=True, null=True)
+    stripe_product_id=models.CharField(max_length=255,blank=True,null=True)
 
     def __str__(self):
      return f"Hall {self.number}"
